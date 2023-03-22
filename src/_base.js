@@ -59,6 +59,7 @@ VANTA.VantaBase = class VantaBase {
       minWidth: 200,
       scale: 1,
       scaleMobile: 1,
+      devicePixelRatio: window.devicePixelRatio
     }, defaultOptions)
 
     if (userOptions instanceof HTMLElement || typeof userOptions === 'string') {
@@ -305,7 +306,7 @@ VANTA.VantaBase = class VantaBase {
     }
     if (this.renderer) {
       this.renderer.setSize(this.width, this.height)
-      this.renderer.setPixelRatio(window.devicePixelRatio / this.scale)
+      this.renderer.setPixelRatio(this.options.devicePixelRatio / this.scale)
     }
     typeof this.onResize === "function" ? this.onResize() : void 0
   }
