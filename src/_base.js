@@ -48,6 +48,8 @@ VANTA.VantaBase = class VantaBase {
     this.resize = this.resize.bind(this)
     this.animationLoop = this.animationLoop.bind(this)
     this.restart = this.restart.bind(this)
+    this.play = this.play.bind(this)
+    this.pause = this.pause.bind(this)
     this.isPlaying = true;
 
     const defaultOptions = (typeof this.getDefaultOptions === 'function') ? this.getDefaultOptions() : this.defaultOptions
