@@ -57,8 +57,11 @@ VANTA.VantaBase = class VantaBase {
       mouseControls: true,
       touchControls: true,
       gyroControls: false,
+      autoResize: true,
       minHeight: 200,
       minWidth: 200,
+      width: 0,
+      height: 0,
       scale: 1,
       scaleMobile: 1,
       devicePixelRatio: window.devicePixelRatio
@@ -171,9 +174,11 @@ VANTA.VantaBase = class VantaBase {
       top: 0,
       left: 0,
       background: '',
+      width: '100%',
+      height: '100%'
     })
     if (this.options.pixelated) {
-      canvasEl.style.imageRendering = 'pixelated'
+      canvasEl.style.imageRendering = 'pixelated';
     }
     Object.assign(canvasEl.style, opts)
     canvasEl.classList.add('vanta-canvas')
@@ -197,7 +202,7 @@ VANTA.VantaBase = class VantaBase {
 
     this.scene = new THREE.Scene()
   }
-  
+
   play() {
     this.isPlaying = true;
 
@@ -285,8 +290,14 @@ VANTA.VantaBase = class VantaBase {
     } else if (this.options.scale) {
       this.scale = this.options.scale
     }
-    this.width = Math.max(this.el.offsetWidth, this.options.minWidth)
-    this.height = Math.max(this.el.offsetHeight, this.options.minHeight)
+    if(this.options.width && this.options.height){
+      this.width = this.options.width
+      this.height = this.options.height
+    }
+    else{
+      this.width = Math.max(this.el.offsetWidth, this.options.minWidth)
+      this.height = Math.max(this.el.offsetHeight, this.options.minHeight)
+    }
   }
   initMouse() {
     // Init mouseX and mouseY
@@ -299,6 +310,9 @@ VANTA.VantaBase = class VantaBase {
   }
 
   resize() {
+    if(!this.options.autoResize){
+      return false;
+    }
     this.setSize()
     if (this.camera) {
       this.camera.aspect = this.width / this.height
@@ -308,6 +322,7 @@ VANTA.VantaBase = class VantaBase {
     }
     if (this.renderer) {
       this.renderer.setSize(this.width, this.height)
+
       this.renderer.setPixelRatio(this.options.devicePixelRatio / this.scale)
     }
     typeof this.onResize === "function" ? this.onResize() : void 0
@@ -328,8 +343,8 @@ VANTA.VantaBase = class VantaBase {
   animationLoop() {
     if (!this.isPlaying){
       return;
-    };
-  
+    }
+
     // Step time
     this.t || (this.t = 0)
     // Uniform time

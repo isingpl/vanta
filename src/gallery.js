@@ -20,6 +20,7 @@ const GALLERY = [
   "dots",
   "rings",
   "halo",
+  "blur"
 ]
 
 var debounce = function(func, wait, immediate) {
@@ -206,6 +207,14 @@ var loadEffect = function(_effectName, loadOptions) {
     gui.add(options, 'yOffset',-0.5,0.5).step(0.01).onFinishChange(effect.updateUniforms)
     // gui.add(options, 'ringFactor', 0,3).step(0.1).onFinishChange(effect.updateUniforms)
     // gui.add(options, 'rotationFactor', 0,3).step(0.1).onFinishChange(effect.updateUniforms)
+  } else if (effectName === "FOG") {
+    gui.addColor(options, 'highlightColor').onFinishChange(effect.updateUniforms)
+    gui.addColor(options, 'midtoneColor').onFinishChange(effect.updateUniforms)
+    gui.addColor(options, 'lowlightColor').onFinishChange(effect.updateUniforms)
+    gui.addColor(options, 'baseColor').onFinishChange(effect.updateUniforms)
+    gui.add(options, 'blurFactor', 0.1, 0.9).step(0.01).onFinishChange(effect.updateUniforms)
+    gui.add(options, 'zoom', 0.1, 3.0).step(0.1).onFinishChange(effect.updateUniforms)
+    gui.add(options, 'speed', 0.0, 5.0).step(0.1)
   }
   // Regenerate code!
   gui.__controllers.forEach(c=>{
