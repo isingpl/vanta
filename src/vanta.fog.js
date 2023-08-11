@@ -55,7 +55,7 @@ float noise (in vec2 _st) {
           (d - b) * u.x * u.y;
 }
 
-#define NUM_OCTAVES 2
+#define NUM_OCTAVES 6
 
 float fbm ( in vec2 _st) {
   float v = 0.0;
@@ -73,26 +73,37 @@ float fbm ( in vec2 _st) {
 }
 
 void main() {
-    vec2 st = gl_FragCoord.xy / iResolution.xy*3.;
-    st.x *= 0.7 * iResolution.x / iResolution.y;
-    st *= zoom;
+  vec2 st = gl_FragCoord.xy / iResolution.xy*3.;
+  st.x *= 0.7 * iResolution.x / iResolution.y ; // Still keep it more landscape than square
+  st *= zoom;
 
-    vec3 color = vec3(0.0);
+  // st += st * abs(sin(iTime*0.1)*3.0);
+  vec3 color = vec3(0.0);
 
-    vec2 q = vec2(fbm(st + 0.00 * iTime), fbm(st + vec2(1.0)));
-    
-    vec2 rDir = vec2(0.15, 0.126);
-    vec2 r = vec2(fbm(st + q + vec2(1.7, 9.2) + rDir.x * iTime), fbm(st + q + vec2(8.3, 2.8) + rDir.y * iTime));
+  vec2 q = vec2(0.);
+  q.x = fbm( st + 0.00*iTime);
+  q.y = fbm( st + vec2(1.0));
 
-    float f = fbm(st + r);
-    
-    color = mix(baseColor, lowlightColor, clamp(f * f * 4.0, 0.0, 1.0));
-    color = mix(color, midtoneColor, clamp(length(q), 0.0, 1.0));
-    color = mix(color, highlightColor, clamp(length(r.x), 0.0, 1.0));
-    
-    vec3 finalColor = mix(baseColor, color, f * f * f + 0.6 * f * f + 0.5 * f);
-    
-    gl_FragColor = vec4(finalColor, 1.0);
+  vec2 dir = vec2(0.15,0.126);
+  vec2 r = vec2(0.);
+  r.x = fbm( st + 1.0*q + vec2(1.7,9.2)+ dir.x*iTime );
+  r.y = fbm( st + 1.0*q + vec2(8.3,2.8)+ dir.y*iTime);
+
+  float f = fbm(st+r);
+
+  color = mix(baseColor,
+              lowlightColor,
+              clamp((f*f)*4.0,0.0,1.0));
+
+  color = mix(color,
+              midtoneColor,
+              clamp(length(q),0.0,1.0));
+
+  color = mix(color,
+              highlightColor,
+              clamp(length(r.x),0.0,1.0));
+
+  vec3 finalColor = mix(baseColor, color, f*f*f+.6*f*f+.5*f);
+  gl_FragColor = vec4(finalColor,1.0);
 }
-
 `;
